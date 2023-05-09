@@ -37,14 +37,14 @@ async function run() {
             res.send(result);
         })
 
-        app.get('/services/:id', async(req, res) => {
+        app.get('/services/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
 
             const options = {
                 // Include only the `title` and `imdb` fields in the returned document
-                projection: { title: 1, price: 1, service_id: 1 },
-              };
+                projection: { title: 1, price: 1, service_id: 1, img: 1 },
+            };
 
             const result = await serviceCollection.findOne(query, options);
             res.send(result);
@@ -52,6 +52,16 @@ async function run() {
 
 
         // bookings 
+        app.get('/bookings', async (req, res) => {
+            console.log(req.query.email);
+            let query = {};
+            if (req.query?.email) {
+                query = { email: req.query.email }
+            }
+            const result = await bookingCollection.find(query).toArray();
+            res.send(result);
+        })
+
         app.post('/bookings', async (req, res) => {
             const booking = req.body;
             console.log(booking);
